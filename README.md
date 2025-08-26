@@ -1,273 +1,520 @@
-# Resume Matching API
+# Resume Matching System
 
-A Flask-based API service that provides comprehensive resume matching and skills analysis using ChatGPT. This service can analyze resumes against job descriptions and provide detailed insights about match percentages, skills gaps, and recommendations.
+An AI-powered resume analysis and job matching system built with Flask and OpenAI GPT-4. This application provides both a modern web interface and comprehensive API endpoints for analyzing resumes against job descriptions and generating detailed matching reports.
+
+## 🚀 **Quick Start**
+
+Choose your preferred method:
+
+- **🌐 Web Interface**: Modern UI for easy resume analysis
+- **📡 API Endpoints**: Use with Postman, curl, or any HTTP client
+- **🐳 Docker**: Containerized deployment
+- **📱 Batch Processing**: Analyze multiple resumes at once
 
 ## Features
 
-1. **Resume Matching Percentage**: Get detailed match analysis including overall, skills, experience, and education match percentages
-2. **Skills Analysis**: Analyze matched skills, missing skills, and skill gaps with priority levels
-3. **ChatGPT Integration**: Uses OpenAI's GPT-4 for intelligent analysis and recommendations
-4. **Multi-format Support**: Supports PDF, DOCX, DOC, and TXT resume formats
-5. **Batch Processing**: Analyze multiple resumes at once
-6. **Comprehensive Analysis**: Get both match percentage and skills analysis in a single request
+### 🎯 Core Functionality
+- **OpenAI API Integration**: Secure API key input for AI-powered analysis
+- **Custom Job Descriptions**: Structured input for job details including:
+  - Job Title
+  - Experience Requirements
+  - Location
+  - Industry
+  - Must-Have Skills
+  - Nice-to-Have Skills
+  - Detailed Job Description
 
-## Prerequisites
+### 📁 Resume Upload Options
+- **Single Resume Upload**: Upload individual resume files (PDF, DOCX, DOC, TXT)
+- **Batch Processing**: Upload ZIP files containing multiple resumes for bulk analysis
 
-- Python 3.7+
+### 📊 Analysis & Results
+- **Comprehensive Matching**: Overall, Skills, Experience, and Education match percentages
+- **Detailed Skills Analysis**: Matched and missing skills categorization with priority levels
+- **Strengths & Weaknesses**: Detailed analysis of candidate strengths and areas for improvement
+- **Ranked Results**: Results sorted by overall match percentage (highest to lowest)
+- **Batch Analysis**: Intelligent scoring that prevents identical scores for different candidates
+- **Skills Gap Analysis**: Critical, important, and optional missing skills identification
+
+### 📥 Export Options
+- **CSV Download**: Export results as a structured CSV file
+- **PDF Report**: Generate professional PDF reports with detailed analysis
+
+## 🛠️ **Installation & Setup**
+
+### Prerequisites
+- Python 3.8 or higher
 - OpenAI API key
-- Virtual environment (recommended)
+- Git (for cloning)
 
-## Installation
+### Setup Options
 
-1. **Clone the repository**:
-   ```bash
-   git clone <repository-url>
-   cd Resume_Match
-   ```
+#### **Option 1: Local Development**
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd Resume_Match
+```
 
-2. **Create and activate virtual environment**:
-   ```bash
-   python -m venv venv
-   # On Windows
-   venv\Scripts\activate
-   # On macOS/Linux
-   source venv/bin/activate
-   ```
+2. Create virtual environment:
+```bash
+python -m venv venv
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+```
 
-3. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-4. **Set up environment variables**:
-   ```bash
-   # Copy the example environment file
-   cp env_example.txt .env
-   
-   # Edit .env file and add your OpenAI API key
-   OPENAI_API_KEY=your_openai_api_key_here
-   ```
+4. Create the uploads directory:
+```bash
+mkdir uploads
+```
+
+#### **Option 2: Docker (Recommended for Production)**
+```bash
+# Using Docker Compose
+docker-compose up -d
+
+# Or manual Docker build
+docker build -t resume-matcher .
+docker run -p 5000:5000 resume-matcher
+```
+
+#### **Option 3: Windows Batch Script**
+```bash
+# Run the provided batch script
+start_server.bat
+```
 
 ## Usage
 
-### Starting the Server
-
+### Starting the Application
 ```bash
 python app.py
 ```
 
-The server will start on `http://localhost:5000`
+The application will be available at `http://localhost:5000`
 
-### API Endpoints
+### Using the Web Interface
 
-#### 1. Health Check
-- **GET** `/health`
-- Returns server status and version information
+1. **OpenAI API Configuration**
+   - Enter your OpenAI API key in the secure input field
+   - The API key is used only for analysis and is not stored
 
-#### 2. Get Default Job Description
-- **GET** `/default-job-description`
-- Returns the default Senior Software Engineer job description
+2. **Job Description Setup**
+   - Fill in the job title, experience requirements, location, and industry
+   - Specify must-have and nice-to-have skills
+   - Provide a detailed job description with roles and responsibilities
 
-#### 3. List Available Resumes
-- **GET** `/list-resumes`
-- Lists all resume files in the `resumes/` directory
+3. **Resume Upload**
+   - Choose between single resume or folder upload
+   - For single upload: Select a PDF, DOCX, DOC, or TXT file
+   - For batch upload: Create a ZIP file containing multiple resumes
 
-#### 4. Resume Match Percentage
-- **POST** `/match-percentage`
-- Analyzes resume against job description and returns match percentages
+4. **Analysis**
+   - Click "Analyze Resumes" to start the AI-powered analysis
+   - The system will process each resume and provide detailed matching scores
 
-**Request Body**:
-```json
-{
-    "resume": "resume text content",
-    "job_description": "optional custom job description"
-}
-```
+5. **Results Review**
+   - View ranked results with overall match percentages
+   - Expand individual results to see detailed analysis
+   - Review strengths, weaknesses, and skill matches
 
-**Response**:
-```json
-{
-    "overall_match_percentage": 85,
-    "skills_match_percentage": 90,
-    "experience_match_percentage": 80,
-    "education_match_percentage": 95,
-    "detailed_analysis": {
-        "strengths": ["Strong Java experience", "Relevant project experience"],
-        "weaknesses": ["Limited JavaScript experience"],
-        "recommendations": ["Consider learning more JavaScript frameworks"]
-    },
-    "key_matches": ["Java development", "Spring Framework"],
-    "missing_requirements": ["Advanced JavaScript skills"]
-}
-```
+6. **Export Results**
+   - Download results as CSV for spreadsheet analysis
+   - Generate PDF reports for professional presentations
 
-#### 5. Skills Analysis
-- **POST** `/skills-analysis`
-- Analyzes skills match and gaps between resume and job description
+## 🌐 **Web Interface Usage**
 
-**Request Body**:
-```json
-{
-    "resume": "resume text content",
-    "job_description": "optional custom job description"
-}
-```
-
-**Response**:
-```json
-{
-    "matched_skills": {
-        "must_have": ["Java", "Spring"],
-        "nice_to_have": ["JavaScript"],
-        "additional": ["MySQL", "Linux"]
-    },
-    "missing_skills": {
-        "critical": ["Advanced JavaScript"],
-        "important": ["React", "Node.js"],
-        "optional": ["Docker", "Kubernetes"]
-    },
-    "skill_gaps": {
-        "high_priority": ["Advanced JavaScript"],
-        "medium_priority": ["React"],
-        "low_priority": ["Docker"]
-    },
-    "skill_analysis": {
-        "technical_skills_match": 85,
-        "soft_skills_match": 90,
-        "domain_knowledge_match": 80
-    },
-    "recommendations": ["Focus on JavaScript frameworks", "Learn React"]
-}
-```
-
-#### 6. Comprehensive Analysis
-- **POST** `/comprehensive-analysis`
-- Get both match percentage and skills analysis in a single request
-
-**Request Body**:
-```json
-{
-    "resume": "resume text content",
-    "job_description": "optional custom job description"
-}
-```
-
-#### 7. Analyze Specific Resume File
-- **POST** `/analyze-resume-file`
-- Analyze a specific resume file from the `resumes/` directory
-
-**Request Body**:
-```json
-{
-    "filename": "resume.pdf",
-    "job_description": "optional custom job description"
-}
-```
-
-#### 8. Analyze All Resumes
-- **GET** `/analyze-all-resumes`
-- Analyze all resumes in the `resumes/` directory against the default job description
-
-### Testing the API
-
-Run the test script to verify all endpoints:
-
+### Starting the Application
 ```bash
-python test_resume_matching.py
+python app.py
 ```
 
-### Example Usage with curl
+The application will be available at `http://localhost:5000`
+
+### Using the Web Interface
+
+1. **OpenAI API Configuration**
+   - Enter your OpenAI API key in the secure input field
+   - The API key is used only for analysis and is not stored
+
+2. **Job Description Setup**
+   - Fill in the job title, experience requirements, location, and industry
+   - Specify must-have and nice-to-have skills
+   - Provide a detailed job description with roles and responsibilities
+
+3. **Resume Upload**
+   - Choose between single resume or folder upload
+   - For single upload: Select a PDF, DOCX, DOC, or TXT file
+   - For batch upload: Create a ZIP file containing multiple resumes
+
+4. **Analysis**
+   - Click "Analyze Resumes" to start the AI-powered analysis
+   - The system will process each resume and provide detailed matching scores
+
+5. **Results Review**
+   - View ranked results with overall match percentages
+   - Expand individual results to see detailed analysis
+   - Review strengths, weaknesses, and skill matches
+
+6. **Export Results**
+   - Download results as CSV for spreadsheet analysis
+   - Generate PDF reports for professional presentations
+
+## 📡 **API Endpoints & Postman Usage**
+
+### Available Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/` | Main application interface |
+| `POST` | `/analyze` | Analyze uploaded resumes |
+| `GET` | `/download-csv` | Download results as CSV |
+| `GET` | `/download-pdf` | Download results as PDF |
+| `GET` | `/health` | Health check endpoint |
+| `GET` | `/debug-session` | Debug session data |
+
+### 🚀 **Postman Setup Guide**
+
+#### **Step 1: Create a New Request**
+1. Open Postman
+2. Click "New" → "Request"
+3. Name it "Resume Analysis"
+
+#### **Step 2: Configure the Request**
+- **Method**: POST
+- **URL**: `http://localhost:5000/analyze`
+
+#### **Step 3: Set Headers**
+- Go to "Headers" tab
+- Add: `Content-Type: multipart/form-data`
+
+#### **Step 4: Set Body**
+- Go to "Body" tab
+- Select "form-data"
+- Add your fields:
+
+| Key | Type | Value |
+|-----|------|-------|
+| `apiKey` | Text | Your OpenAI API key |
+| `jobTitle` | Text | Senior Software Engineer |
+| `experience` | Text | 4-7 years |
+| `location` | Text | Remote |
+| `industry` | Text | Information Technology |
+| `mustHaveSkills` | Text | Java, Spring, MySQL |
+| `niceToHaveSkills` | Text | JavaScript, React |
+| `jobDescription` | Text | Your detailed job description |
+| `uploadType` | Text | `single` or `folder` |
+| `singleResume` | File | Select your resume file |
+| `folderResumes` | File | Select ZIP file (for batch) |
+
+#### **Step 5: Send Request**
+Click "Send" and you'll get a JSON response with the analysis results!
+
+### 📋 **Example Postman Request**
+
+**URL:** `http://localhost:5000/analyze`
+
+**Method:** POST
+
+**Headers:**
+```
+Content-Type: multipart/form-data
+```
+
+**Body (form-data):**
+```
+apiKey: sk-your-openai-api-key-here
+jobTitle: Senior Software Engineer
+experience: 4-7 years
+location: Remote
+industry: Information Technology
+mustHaveSkills: Java, Spring, MySQL
+niceToHaveSkills: JavaScript, React
+jobDescription: We are seeking a Senior Software Engineer with strong Java experience...
+uploadType: single
+singleResume: [Select your PDF/DOCX file]
+```
+
+### 🔧 **Quick Test Commands (curl)**
 
 ```bash
 # Health check
 curl http://localhost:5000/health
 
-# Get match percentage
-curl -X POST http://localhost:5000/match-percentage \
-  -H "Content-Type: application/json" \
-  -d '{"resume": "Sample resume text", "job_description": "Sample job description"}'
+# Download CSV
+curl http://localhost:5000/download-csv
 
-# Analyze all resumes
-curl http://localhost:5000/analyze-all-resumes
+# Download PDF
+curl http://localhost:5000/download-pdf
 ```
 
-## Default Job Description
+### 📊 **API Response Format**
 
-The API comes with a pre-configured job description for a Senior Software Engineer position:
+```json
+{
+  "success": true,
+  "results": [
+    {
+      "filename": "resume.pdf",
+      "match_analysis": {
+        "overall_match_percentage": 85,
+        "skills_match_percentage": 80,
+        "experience_match_percentage": 90,
+        "education_match_percentage": 100,
+        "detailed_analysis": {
+          "strengths": ["Strong Java experience", "Good leadership skills"],
+          "weaknesses": ["Limited cloud experience"],
+          "recommendations": ["Consider AWS certification"]
+        },
+        "key_matches": ["Java expertise", "Team leadership"],
+        "missing_requirements": ["Cloud platform experience"]
+      },
+      "skills_analysis": {
+        "matched_skills": {
+          "must_have": ["Java"],
+          "nice_to_have": ["JavaScript"],
+          "additional": ["Spring", "MySQL"]
+        },
+        "missing_skills": {
+          "critical": [],
+          "important": ["AWS", "Docker"],
+          "optional": ["Kubernetes"]
+        }
+      }
+    }
+  ],
+  "total_resumes": 1
+}
+```
 
-- **Experience Required**: 4-7 years
-- **Must-Have Skills**: Java
-- **Nice-to-Have Skills**: JavaScript
-- **Industry**: Information Technology
-- **Education**: Bachelor's or Master's Degree in Computer Science
+## 🐳 **Docker Deployment**
 
-## File Structure
+### Using Docker Compose
+```bash
+docker-compose up -d
+```
+
+### Manual Docker Build
+```bash
+docker build -t resume-matcher .
+docker run -p 5000:5000 resume-matcher
+```
+
+## 📁 **File Structure**
 
 ```
 Resume_Match/
-├── app.py                 # Main Flask application
-├── requirements.txt       # Python dependencies
-├── test_resume_matching.py # Test script
-├── .env                   # Environment variables (create from env_example.txt)
-├── resumes/              # Directory containing resume files
-├── services/             # Business logic services
-│   ├── llm_utils.py      # OpenAI API integration
-│   ├── match_percentage.py # Match percentage analysis
-│   └── skills_analysis.py # Skills analysis
-└── utils/                # Utility functions
-    ├── jd_parser.py      # Job description parsing
-    └── resume_parser.py  # Resume text extraction
+├── app.py                    # Main Flask application with web UI
+├── requirements.txt          # Python dependencies
+├── README.md                # This documentation file
+├── uploads/                 # Upload directory for resumes
+├── services/
+│   ├── llm_utils.py         # OpenAI API integration utilities
+│   ├── match_percentage.py  # Intelligent match scoring with batch analysis
+│   └── skills_analysis.py   # Skills analysis and gap identification
+├── utils/
+│   ├── jd_parser.py         # Job description parsing utilities
+│   └── resume_parser.py     # Resume text extraction (PDF, DOCX, DOC, TXT)
+├── test_resume_matching.py  # Comprehensive API testing script
+├── test_batch_scoring.py    # Batch scoring verification script
+├── deploy.py                # Local deployment helper
+├── Dockerfile               # Docker container configuration
+├── docker-compose.yml       # Multi-container deployment
+└── start_server.bat         # Windows server startup script
 ```
 
-## Deployment
+## Supported File Formats
 
-### Local Development
+### Resume Files
+- PDF (.pdf)
+- Microsoft Word (.docx, .doc)
+- Plain Text (.txt)
+
+### Batch Upload
+- ZIP files containing supported resume formats
+
+## Security Features
+
+- **Secure API Key Handling**: API keys are not stored and are used only for analysis
+- **File Validation**: Strict file type validation for uploads
+- **Session Management**: Secure session handling for temporary data storage
+
+## Performance Considerations
+
+- **File Size Limits**: Maximum 50MB per upload
+- **Processing Time**: Analysis time depends on the number of resumes and API response time
+- **Memory Usage**: Efficient processing with temporary file cleanup
+
+## 🚨 **Troubleshooting & Common Issues**
+
+### **Common Issues & Solutions**
+
+#### **1. API Key Errors**
+- **Problem**: "Invalid API key" or "Insufficient credits"
+- **Solution**: 
+  - Verify your OpenAI API key is valid
+  - Check API key has sufficient credits
+  - Ensure no extra spaces in the key
+
+#### **2. File Upload Issues**
+- **Problem**: "Invalid file type" or "File too large"
+- **Solution**:
+  - Use supported formats: PDF, DOCX, DOC, TXT
+  - Keep files under 50MB
+  - For batch uploads, ensure ZIP contains only supported formats
+
+#### **3. Analysis Failures**
+- **Problem**: "Could not extract text" or "Analysis failed"
+- **Solution**:
+  - Check internet connection for API calls
+  - Ensure job description is complete and detailed
+  - Verify resume files contain extractable text (not just images)
+
+#### **4. Batch Scoring Issues**
+- **Problem**: All resumes getting identical scores
+- **Solution**: 
+  - The system now automatically detects batch analysis
+  - Uses specialized prompts for varied scoring
+  - Check console logs for "BATCH" mode confirmation
+
+#### **5. Skills Analysis Errors**
+- **Problem**: "Could not parse response" in skills section
+- **Solution**:
+  - The system now has robust JSON parsing
+  - Automatically extracts skills even with extra text
+  - Check console for detailed error logs
+
+### **Error Messages & Meanings**
+
+| Error Message | Meaning | Solution |
+|---------------|---------|----------|
+| "No valid resumes found" | No supported files in upload | Check file formats and content |
+| "Could not extract text" | Resume is image-based or corrupted | Use text-based resumes |
+| "Invalid file type" | Unsupported file format | Use PDF, DOCX, DOC, or TXT |
+| "API key required" | Missing OpenAI API key | Enter valid API key |
+| "File too large" | Exceeds 50MB limit | Compress or split files |
+
+### **Debug Commands**
+
 ```bash
-python app.py
+# Check server health
+curl http://localhost:5000/health
+
+# Debug session data
+curl http://localhost:5000/debug-session
+
+# Test batch scoring
+python test_batch_scoring.py
 ```
 
-### Production Deployment
-For production deployment, consider using:
-- Gunicorn: `gunicorn -w 4 -b 0.0.0.0:5000 app:app`
-- Docker containerization
-- Cloud platforms (AWS, Google Cloud, Azure)
+### **Console Logs to Watch For**
 
-### Environment Variables
-- `OPENAI_API_KEY`: Your OpenAI API key (required)
-- `FLASK_ENV`: Environment mode (development/production)
-- `FLASK_DEBUG`: Debug mode (True/False)
+```
+Analysis Mode: BATCH - Processing 3 resumes
+Analyzing: resume1.pdf (Batch mode: True)
+  resume1.pdf Score: 85%
+Analyzing: resume2.pdf (Batch mode: True)
+  resume2.pdf Score: 72%
+```
 
-## Error Handling
+## 🧪 **Testing & Development**
 
-The API includes comprehensive error handling:
-- Invalid JSON requests
-- Missing required fields
-- File not found errors
-- OpenAI API errors
-- Resume parsing errors
+### **Running Tests**
+```bash
+# Comprehensive API testing
+python test_resume_matching.py
 
-## Limitations
+# Batch scoring verification
+python test_batch_scoring.py
 
-- Requires OpenAI API key and credits
-- Resume parsing depends on file format and quality
-- Analysis quality depends on ChatGPT's understanding
-- Rate limits apply based on OpenAI API tier
+# Local deployment helper
+python deploy.py
+```
 
-## Contributing
+### **Development Features**
+- **Debug Mode**: Automatic console logging
+- **Batch Analysis Detection**: Smart scoring for multiple resumes
+- **Robust Error Handling**: Graceful fallbacks for parsing issues
+- **Session Management**: Temporary data storage for exports
+
+## 🚀 **Quick Start Examples**
+
+### **Example 1: Single Resume Analysis**
+1. Start the server: `python app.py`
+2. Open Postman and create a POST request to `http://localhost:5000/analyze`
+3. Set body to form-data with your API key, job description, and resume file
+4. Send request and get detailed analysis
+
+### **Example 2: Batch Resume Analysis**
+1. Create a ZIP file with multiple resumes
+2. Use Postman with `uploadType: folder`
+3. Upload the ZIP file
+4. Get ranked results for all candidates
+
+### **Example 3: Web Interface**
+1. Open `http://localhost:5000` in your browser
+2. Fill in job details and upload resumes
+3. View results and download reports
+
+## 🤝 **Contributing**
 
 1. Fork the repository
-2. Create a feature branch
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
-4. Add tests if applicable
+4. Test thoroughly with the provided test scripts
 5. Submit a pull request
 
-## License
+## 📄 **License**
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Support
+## 🆘 **Support & Help**
 
-For issues and questions:
-1. Check the API documentation at `http://localhost:5000`
-2. Review the test script for usage examples
-3. Check the logs for error details
+### **Getting Help**
+1. Check the troubleshooting section above
+2. Review console logs for detailed error information
+3. Use the debug endpoints: `/health` and `/debug-session`
+4. Create an issue in the repository with:
+   - Error messages
+   - Console logs
+   - Steps to reproduce
+
+### **Common Questions**
+
+**Q: Why are all my batch resumes getting the same score?**
+A: The system now automatically detects batch analysis and uses specialized prompts for varied scoring. Check console logs for "BATCH" mode confirmation.
+
+**Q: How do I use Postman with this API?**
+A: See the detailed Postman setup guide in the "API Endpoints & Postman Usage" section above.
+
+**Q: Can I analyze resumes without the web interface?**
+A: Yes! Use the `/analyze` endpoint directly with Postman, curl, or any HTTP client.
+
+**Q: How do I get different scores for different candidates?**
+A: The system automatically handles this. For batch analysis, it uses higher temperature and specialized prompts to ensure varied scoring.
+
+---
+
+## ⚠️ **Important Notes**
+
+- **OpenAI API Key Required**: You need an active OpenAI API key for AI-powered analysis
+- **Internet Connection**: Required for API calls to OpenAI
+- **File Size Limit**: Maximum 50MB per upload
+- **Supported Formats**: PDF, DOCX, DOC, TXT for resumes
+- **Batch Processing**: ZIP files for multiple resume analysis
+- **Session Data**: Analysis results are temporarily stored for export functionality
+
+---
+
+**🎯 Ready to get started? Choose your method:**
+- **🌐 Web Interface**: `python app.py` then visit `http://localhost:5000`
+- **📡 API Testing**: Use Postman with the guide above
+- **🐳 Docker**: `docker-compose up -d`
+- **🧪 Testing**: Run `python test_resume_matching.py`

@@ -1,7 +1,8 @@
-import textract
 import os
 import PyPDF2
 from typing import Optional
+from docx import Document
+import docx2txt
 
 def extract_resume_text(file_path: str) -> Optional[str]:
     """
@@ -14,31 +15,72 @@ def extract_resume_text(file_path: str) -> Optional[str]:
         # Handle different file extensions
         file_extension = os.path.splitext(file_path)[1].lower()
         
-        if file_extension in ['.pdf', '.docx', '.doc', '.txt']:
-            # Try textract first
+        if file_extension == '.pdf':
+            # Extract text from PDF using PyPDF2
             try:
-                text = textract.process(file_path).decode('utf-8')
+                with open(file_path, 'rb') as file:
+                    pdf_reader = PyPDF2.PdfReader(file)
+                    text = ""
+                    for page in pdf_reader.pages:
+                        page_text = page.extract_text()
+                        if page_text:
+                            text += page_text + "\n"
+                    if text.strip():
+                        return text.strip()
+            except Exception as e:
+                print(f"PyPDF2 failed for {file_path}: {str(e)}")
+                return f"Error extracting text from {file_path}: PyPDF2 failed"
+        
+        elif file_extension == '.docx':
+            # Extract text from DOCX using python-docx
+            try:
+                doc = Document(file_path)
+                text = ""
+                for paragraph in doc.paragraphs:
+                    text += paragraph.text + "\n"
+                if text.strip():
+                    return text.strip()
+            except Exception as e:
+                print(f"python-docx failed for {file_path}: {str(e)}")
+                # Fallback to docx2txt
+                try:
+                    text = docx2txt.process(file_path)
+                    if text and text.strip():
+                        return text.strip()
+                except Exception as e2:
+                    print(f"docx2txt also failed for {file_path}: {str(e2)}")
+                    return f"Error extracting text from {file_path}: Both methods failed"
+        
+        elif file_extension == '.doc':
+            # Extract text from DOC using docx2txt
+            try:
+                text = docx2txt.process(file_path)
                 if text and text.strip():
                     return text.strip()
             except Exception as e:
-                print(f"textract failed for {file_path}: {str(e)}")
-            
-            # If textract fails for PDF, try PyPDF2 as fallback
-            if file_extension == '.pdf':
+                print(f"docx2txt failed for {file_path}: {str(e)}")
+                return f"Error extracting text from {file_path}: docx2txt failed"
+        
+        elif file_extension == '.txt':
+            # Read plain text files
+            try:
+                with open(file_path, 'r', encoding='utf-8') as file:
+                    text = file.read()
+                    if text.strip():
+                        return text.strip()
+            except UnicodeDecodeError:
+                # Try with different encoding
                 try:
-                    with open(file_path, 'rb') as file:
-                        pdf_reader = PyPDF2.PdfReader(file)
-                        text = ""
-                        for page in pdf_reader.pages:
-                            page_text = page.extract_text()
-                            if page_text:
-                                text += page_text + "\n"
+                    with open(file_path, 'r', encoding='latin-1') as file:
+                        text = file.read()
                         if text.strip():
                             return text.strip()
                 except Exception as e:
-                    print(f"PyPDF2 failed for {file_path}: {str(e)}")
-            
-            return f"Error extracting text from {file_path}: All methods failed"
+                    print(f"Failed to read {file_path} with latin-1 encoding: {str(e)}")
+                    return f"Error extracting text from {file_path}: Encoding issues"
+            except Exception as e:
+                print(f"Failed to read {file_path}: {str(e)}")
+                return f"Error extracting text from {file_path}: File read failed"
         else:
             return f"Unsupported file format: {file_extension}"
             
