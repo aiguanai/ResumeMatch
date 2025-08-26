@@ -2,16 +2,59 @@
 
 An AI-powered resume analysis and job matching system built with Flask and OpenAI GPT-4. This application provides both a modern web interface and comprehensive API endpoints for analyzing resumes against job descriptions and generating detailed matching reports.
 
+## 📋 **Table of Contents**
+
+- [🚀 Quick Start](#-quick-start)
+- [✨ Features](#features)
+- [🛠️ Installation & Setup](#️-installation--setup)
+- [🌐 Web Interface Usage](#-web-interface-usage)
+- [📡 API Endpoints & Postman Usage](#-api-endpoints--postman-usage)
+- [🐳 Docker Deployment](#-docker-deployment)
+- [📁 File Structure](#-file-structure)
+- [📋 Technical Specifications](#-technical-specifications)
+- [🚨 Troubleshooting & Common Issues](#-troubleshooting--common-issues)
+- [🧪 Testing & Development](#-testing--development)
+- [🚀 Quick Start Examples](#-quick-start-examples)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+- [🆘 Support & Help](#-support--help)
+- [⚠️ Important Notes](#️-important-notes)
+- [🎯 Ready to Get Started?](#-ready-to-get-started)
+
 ## 🚀 **Quick Start**
 
 Choose your preferred method:
 
 - **🌐 Web Interface**: Modern UI for easy resume analysis
 - **📡 API Endpoints**: Use with Postman, curl, or any HTTP client
-- **🐳 Docker**: Containerized deployment
+- **🐳 Docker**: Containerized deployment (recommended for production)
 - **📱 Batch Processing**: Analyze multiple resumes at once
 
-## Features
+### **🚀 Get Started in 5 Minutes**
+
+```bash
+# Option 1: Local Development
+git clone <repository-url>
+cd Resume_Match
+python -m venv venv
+venv\Scripts\activate  # Windows
+pip install -r requirements.txt
+python app.py
+
+# Option 2: Docker (Fastest)
+docker-compose up -d
+
+# Option 3: Windows Script
+start_server.bat
+```
+
+**🎯 Next Steps:**
+1. **Start the server** using one of the options above
+2. **Open your browser** and go to `http://localhost:5000`
+3. **Enter your OpenAI API key** and job description
+4. **Upload resumes** and start analyzing!
+
+## ✨ **Features**
 
 ### 🎯 Core Functionality
 - **OpenAI API Integration**: Secure API key input for AI-powered analysis
@@ -90,44 +133,6 @@ docker run -p 5000:5000 resume-matcher
 # Run the provided batch script
 start_server.bat
 ```
-
-## Usage
-
-### Starting the Application
-```bash
-python app.py
-```
-
-The application will be available at `http://localhost:5000`
-
-### Using the Web Interface
-
-1. **OpenAI API Configuration**
-   - Enter your OpenAI API key in the secure input field
-   - The API key is used only for analysis and is not stored
-
-2. **Job Description Setup**
-   - Fill in the job title, experience requirements, location, and industry
-   - Specify must-have and nice-to-have skills
-   - Provide a detailed job description with roles and responsibilities
-
-3. **Resume Upload**
-   - Choose between single resume or folder upload
-   - For single upload: Select a PDF, DOCX, DOC, or TXT file
-   - For batch upload: Create a ZIP file containing multiple resumes
-
-4. **Analysis**
-   - Click "Analyze Resumes" to start the AI-powered analysis
-   - The system will process each resume and provide detailed matching scores
-
-5. **Results Review**
-   - View ranked results with overall match percentages
-   - Expand individual results to see detailed analysis
-   - Review strengths, weaknesses, and skill matches
-
-6. **Export Results**
-   - Download results as CSV for spreadsheet analysis
-   - Generate PDF reports for professional presentations
 
 ## 🌐 **Web Interface Usage**
 
@@ -330,27 +335,22 @@ Resume_Match/
 └── start_server.bat         # Windows server startup script
 ```
 
-## Supported File Formats
+## 📋 **Technical Specifications**
 
-### Resume Files
-- PDF (.pdf)
-- Microsoft Word (.docx, .doc)
-- Plain Text (.txt)
+### **Supported File Formats**
+- **Resume Files**: PDF (.pdf), Microsoft Word (.docx, .doc), Plain Text (.txt)
+- **Batch Upload**: ZIP files containing supported resume formats
+- **File Size Limit**: Maximum 50MB per upload
 
-### Batch Upload
-- ZIP files containing supported resume formats
-
-## Security Features
-
+### **Security Features**
 - **Secure API Key Handling**: API keys are not stored and are used only for analysis
 - **File Validation**: Strict file type validation for uploads
 - **Session Management**: Secure session handling for temporary data storage
 
-## Performance Considerations
-
-- **File Size Limits**: Maximum 50MB per upload
+### **Performance Considerations**
 - **Processing Time**: Analysis time depends on the number of resumes and API response time
 - **Memory Usage**: Efficient processing with temporary file cleanup
+- **Scalability**: Optimized for both single and batch resume processing
 
 ## 🚨 **Troubleshooting & Common Issues**
 
@@ -446,22 +446,29 @@ python deploy.py
 
 ## 🚀 **Quick Start Examples**
 
-### **Example 1: Single Resume Analysis**
+### **Example 1: Single Resume Analysis (API)**
 1. Start the server: `python app.py`
 2. Open Postman and create a POST request to `http://localhost:5000/analyze`
 3. Set body to form-data with your API key, job description, and resume file
 4. Send request and get detailed analysis
 
-### **Example 2: Batch Resume Analysis**
+### **Example 2: Batch Resume Analysis (API)**
 1. Create a ZIP file with multiple resumes
 2. Use Postman with `uploadType: folder`
 3. Upload the ZIP file
 4. Get ranked results for all candidates
 
-### **Example 3: Web Interface**
+### **Example 3: Web Interface (Browser)**
 1. Open `http://localhost:5000` in your browser
 2. Fill in job details and upload resumes
 3. View results and download reports
+
+### **Example 4: Docker Deployment**
+```bash
+# Quick start with Docker
+docker-compose up -d
+# Access at http://localhost:5000
+```
 
 ## 🤝 **Contributing**
 
@@ -486,19 +493,16 @@ This project is licensed under the MIT License - see the LICENSE file for detail
    - Console logs
    - Steps to reproduce
 
-### **Common Questions**
+### **Common Questions & Answers**
 
-**Q: Why are all my batch resumes getting the same score?**
-A: The system now automatically detects batch analysis and uses specialized prompts for varied scoring. Check console logs for "BATCH" mode confirmation.
-
-**Q: How do I use Postman with this API?**
-A: See the detailed Postman setup guide in the "API Endpoints & Postman Usage" section above.
-
-**Q: Can I analyze resumes without the web interface?**
-A: Yes! Use the `/analyze` endpoint directly with Postman, curl, or any HTTP client.
-
-**Q: How do I get different scores for different candidates?**
-A: The system automatically handles this. For batch analysis, it uses higher temperature and specialized prompts to ensure varied scoring.
+| Question | Answer |
+|----------|---------|
+| **Why are all my batch resumes getting the same score?** | The system now automatically detects batch analysis and uses specialized prompts for varied scoring. Check console logs for "BATCH" mode confirmation. |
+| **How do I use Postman with this API?** | See the detailed Postman setup guide in the "API Endpoints & Postman Usage" section above. |
+| **Can I analyze resumes without the web interface?** | Yes! Use the `/analyze` endpoint directly with Postman, curl, or any HTTP client. |
+| **How do I get different scores for different candidates?** | The system automatically handles this. For batch analysis, it uses higher temperature and specialized prompts to ensure varied scoring. |
+| **What file formats are supported?** | PDF, DOCX, DOC, and TXT files. For batch processing, use ZIP files containing these formats. |
+| **Is there a file size limit?** | Yes, maximum 50MB per upload. |
 
 ---
 
@@ -513,8 +517,28 @@ A: The system automatically handles this. For batch analysis, it uses higher tem
 
 ---
 
-**🎯 Ready to get started? Choose your method:**
-- **🌐 Web Interface**: `python app.py` then visit `http://localhost:5000`
-- **📡 API Testing**: Use Postman with the guide above
-- **🐳 Docker**: `docker-compose up -d`
-- **🧪 Testing**: Run `python test_resume_matching.py`
+## 🎯 **Ready to Get Started?**
+
+### **Choose Your Method:**
+
+| Method | Command | Best For |
+|--------|---------|----------|
+| **🌐 Web Interface** | `python app.py` | Beginners, visual users |
+| **📡 API Testing** | Use Postman guide above | Developers, automation |
+| **🐳 Docker** | `docker-compose up -d` | Production, deployment |
+| **🧪 Testing** | `python test_resume_matching.py` | Development, debugging |
+
+### **🚀 Quick Commands:**
+```bash
+# Start web interface
+python app.py
+
+# Docker deployment
+docker-compose up -d
+
+# Run tests
+python test_resume_matching.py
+
+# Health check
+curl http://localhost:5000/health
+```
